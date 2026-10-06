@@ -47,9 +47,9 @@ classDiagram
     Audio <|-- Song
     Audio <|-- Podcast
     Audio "0..*" -- "1..*" Artist : veröffentlicht
-    Song "1..*" -- "0..*" Playlist: ist teil von
     Song "1..*" -- "0..*" Album : gehört zu
-    User "1" -- "1..*" Playlist: erstellt
+    User "1" -- "0..*" Playlist : erstellt
+    Playlist "0..*" -- "0..*" Song : enthält
 
     note for Audio "{disjoint, complete}\n (Song oder Podcast)<br>K1: duration > 0<br>K2: audioUrl eindeutig"
     note for Playlist "K3: title pro User eindeutig"
