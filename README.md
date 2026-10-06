@@ -50,7 +50,7 @@ classDiagram
     Song "1..*" -- "0..*" Album : gehört zu
     User "1" -- "1..*" Playlist: erstellt
 
-    note for Audio "Vererbung: {disjoint, complete} (Song oder Podcast)<br>K1: duration > 0<br>K2: audioUrl eindeutig"
+    note for Audio "{disjoint, complete}\n (Song oder Podcast)<br>K1: duration > 0<br>K2: audioUrl eindeutig"
     note for Song "K4: Song kommt in einem Album höchstens einmal vor"
     note for Album "K5: releasedate nicht in der Zukunft"
     note for User "K6: username eindeutig"
