@@ -1,0 +1,27 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+.Spotlight-V100
+.Trashes
+.fseventsd
+.DocumentRevisions-V100
+.TemporaryItems
+Icon?
+
+# VS Code
+.vscode/
+*.code-workspace
+
+# Env / secrets
+.env
+.env.*
+
+# Tooling
+.serena/
+.claude/
+docs/notes/
+
+# Logs
+*.log
