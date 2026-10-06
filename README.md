@@ -2,25 +2,24 @@
 
 ## Beschreibung
 
-Die Audioverwaltung verwaltet Musikkatalog und Benutzerbewertungen. Ein Artist ist entweder ein Solokünstler oder eine Band. Jeder Artist veröffentlicht beliebig viele Alben, jedes Album gehört genau einem Artist. Ein Album enthält mindestens einen Song und hat ein Veröffentlichungsdatum. Jeder Song hat eine Dauer und eine Track-Nummer innerhalb seines Albums. Songs werden einem oder mehreren Stilen zugeordnet (z.B. Rock, Jazz), ein Stil umfasst viele Songs. Benutzer bewerten Songs mit einer Punktzahl und einem Zeitstempel.
+Die Audioverwaltung verwaltet Audioinhalte wie Songs und Podcasts. Jedes Audio hat einen Titel, eine Dauer und eine Audio-URL und ist entweder ein Song oder ein Podcast. Ein Song hat zusätzlich ein Genre, ein Podcast eine Beschreibung. Audios werden von einem oder mehreren Artists veröffentlicht, ein Artist veröffentlicht beliebig viele Audios. Songs können auf Alben erscheinen, ein Album hat ein Veröffentlichungsdatum und enthält mindestens einen Song. Ein Song kann auf mehreren Alben vorkommen oder auf keinem (Single). User haben einen Benutzernamen und ein Profilbild und erstellen eine oder mehrere Playlists, die Songs enthalten. Ein Song kann in beliebig vielen Playlists enthalten sein.
 
 ## Konsistenzbedingungen
 
-1. Die Punktzahl einer Bewertung liegt zwischen 1 und 5.
-2. Ein Benutzer kann denselben Song nur einmal bewerten.
-3. Die Track-Nummer ist innerhalb eines Albums eindeutig.
-4. Das Gründungsjahr einer Band liegt nicht in der Zukunft.
-5. Das Bewertungsdatum liegt nicht vor dem Veröffentlichungsdatum des Albums des bewerteten Songs.
+1. Die Dauer eines Audios ist grösser als 0.
+2. Die Audio-URL eines Audios ist eindeutig.
+4. Jeder Song ist in einem Album eindeutig
+5. Das Veröffentlichungsdatum eines Albums liegt nicht in der Zukunft.
+6. Der Benutzername eines Users ist eindeutig.
 
 ## Klassendiagramm
 
 ```mermaid
 classDiagram
     class Audio {
-        +INTEGER id
         +VARCHAR title
         +TIME duration
-        +VARCHAR fileUrl
+        +VARCHAR audioUrl
     }
     class Song {
         + VARCHAR genre
@@ -29,29 +28,30 @@ classDiagram
         +VARCHAR description
     }
     class Artist {
-        +INTEGER id
         +VARCHAR name
         +VARCHAR country
     }
     class Album {
-        +INTEGER albumId
         +VARCHAR title
         +DATE releasedate
     }
     class Playlist {
-        +INTEGER id
-        +VARCHAR name
+        +VARCHAR title
+    }
+    class User {
+        +VARCHAR username
+        +VARCHAR profilePictureUrl
     }
 
     Audio <|-- Song
     Audio <|-- Podcast
-    Audio "0..*" <-- "1..*" Artist : veröffentlicht
-    Song "1..*" -- "0..*" Album
-    Song "1..*" -- "0..*" Playlist
+    Audio "0..*" -- "1..*" Artist : veröffentlicht
+    Song "1..*" -- "0..*" Playlist: ist teil von
+    Song "1..*" -- "0..*" Album : gehört zu
+    User "1" -- "1..*" Playlist: erstellt
 
-
+    note for Audio "Vererbung: {disjoint, complete} (Song oder Podcast)<br>K1: duration > 0<br>K2: audioUrl eindeutig"
+    note for Song "K4: Song kommt in einem Album höchstens einmal vor"
+    note for Album "K5: releasedate nicht in der Zukunft"
+    note for User "K6: username eindeutig"
 ```
-    note for Artist "Vererbung: disjoint, complete (Solokünstler oder Band)"
-    note for Bewertung "K1: punkte zwischen 1 und 5<br>K2: pro Benutzer und Song nur eine Bewertung<br>K5: bewertetAm nicht vor Album.veroeffentlichungsdatum"
-    note for Song "K3: trackNummer pro Album eindeutig"
-    note for Band "K4: gruendungsjahr nicht in der Zukunft"
