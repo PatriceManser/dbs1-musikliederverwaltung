@@ -8,9 +8,10 @@ Die Audioverwaltung verwaltet Audioinhalte wie Songs und Podcasts. Jedes Audio h
 
 1. Die Dauer eines Audios ist grösser als 0.
 2. Die Audio-URL eines Audios ist eindeutig.
-4. Jeder Song ist in einem Album eindeutig
-5. Das Veröffentlichungsdatum eines Albums liegt nicht in der Zukunft.
-6. Der Benutzername eines Users ist eindeutig.
+3. Der Titel einer Playlist ist pro User eindeutig.
+4. Das Veröffentlichungsdatum eines Albums liegt nicht in der Zukunft.
+5. Der Benutzername eines Users ist eindeutig.
+
 
 ## Klassendiagramm
 
@@ -51,7 +52,15 @@ classDiagram
     User "1" -- "1..*" Playlist: erstellt
 
     note for Audio "{disjoint, complete}\n (Song oder Podcast)<br>K1: duration > 0<br>K2: audioUrl eindeutig"
-    note for Song "K4: Song kommt in einem Album höchstens einmal vor"
-    note for Album "K5: releasedate nicht in der Zukunft"
-    note for User "K6: username eindeutig"
+    note for Playlist "K3: title pro User eindeutig"
+    note for Album "K4: releasedate nicht in der Zukunft"
+    note for User "K5: username eindeutig"
 ```
+
+## Autoren
+
+Marc Rusch, Marius Stadler, Patrice Manser
+
+## Einsatz von KI
+
+Beschreibung, Konsistenzbedingungen und Klassendiagramm wurde von den Autoren erstellt mit Unterstützung von Claude Code verbessert.
