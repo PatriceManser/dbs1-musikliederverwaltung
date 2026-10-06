@@ -17,6 +17,7 @@ Die Audioverwaltung verwaltet Musikkatalog und Benutzerbewertungen. Ein Artist i
 ```mermaid
 classDiagram
     class Audio {
+        +INTEGER id
         +VARCHAR title
         +TIME duration
         +VARCHAR fileUrl
@@ -28,7 +29,7 @@ classDiagram
         +VARCHAR description
     }
     class Artist {
-        +INTEGER artistId
+        +INTEGER id
         +VARCHAR name
         +VARCHAR country
     }
@@ -37,36 +38,20 @@ classDiagram
         +VARCHAR title
         +DATE releasedate
     }
-    class Song {
-        +INTEGER songId
-        
-        +SMALLINT trackNumber
-        +TIME time
-    }
-    class Stil {
-        +INTEGER stilId
-        +VARCHAR bezeichnung
-    }
-    class Benutzer {
-        +INTEGER benutzerId
-        +VARCHAR benutzername
-        +VARCHAR email
-    }
-    class Bewertung {
-        +SMALLINT punkte
-        +TIMESTAMP bewertetAm
+    class Playlist {
+        +INTEGER id
+        +VARCHAR name
     }
 
-    Artist <|-- Solokuenstler
-    Artist <|-- Band
-    Artist "1" --> "0..*" Album : veröffentlicht
-    Album "1" *-- "1..*" Song : enthält
-    Song "0..*" -- "1..*" Stil : gehört zu
-    Benutzer "1" -- "0..*" Bewertung : gibt ab
-    Song "1" -- "0..*" Bewertung : erhält
+    Audio <|-- Song
+    Audio <|-- Podcast
+    Audio "0..*" <-- "1..*" Artist : veröffentlicht
+    Song "1..*" -- "0..*" Album
+    Song "1..*" -- "0..*" Playlist
 
+
+```
     note for Artist "Vererbung: disjoint, complete (Solokünstler oder Band)"
     note for Bewertung "K1: punkte zwischen 1 und 5<br>K2: pro Benutzer und Song nur eine Bewertung<br>K5: bewertetAm nicht vor Album.veroeffentlichungsdatum"
     note for Song "K3: trackNummer pro Album eindeutig"
     note for Band "K4: gruendungsjahr nicht in der Zukunft"
-```
