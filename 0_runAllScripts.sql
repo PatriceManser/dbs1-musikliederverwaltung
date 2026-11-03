@@ -1,4 +1,4 @@
-DROP DATABASE IF EXISTS audioverwaltung WITH (FORCE);
+DROP DATABASE IF EXISTS audioverwaltung;
 DROP ROLE IF EXISTS audioverwaltung_user;
 
 CREATE ROLE audioverwaltung_user WITH LOGIN PASSWORD 'audioverwaltung';
