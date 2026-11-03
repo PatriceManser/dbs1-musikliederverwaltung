@@ -1,4 +1,4 @@
--- Autoren: Rusch, Stadler, Manser
+-- Autoren: Manser, Rusch, Stadler
 
 INSERT INTO artist (name, country) VALUES
     ('Queen', 'GB'),

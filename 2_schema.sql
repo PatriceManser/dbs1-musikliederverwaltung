@@ -1,4 +1,4 @@
--- Autoren: Rusch, Stadler, Manser
+-- Autoren: Manser, Rusch, Stadler
 
 CREATE TABLE audio (
     id          INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
