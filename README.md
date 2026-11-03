@@ -64,7 +64,7 @@ classDiagram
 
 ## Logisches DB-Modell
 
-Primärschlüssel ist jeweils das erste Attribut, bei den Beziehungstabellen die Kombination der beiden Fremdschlüssel. Die Vererbung von `Audio` ist mit einer Tabelle pro Klasse umgesetzt: `Song` und `Podcast` verwenden den Schlüssel von `Audio` als Primär- und Fremdschlüssel.
+Primärschlüssel ist jeweils das erste Attribut, bei den Beziehungstabellen die Kombination der beiden Fremdschlüssel. Die Vererbung von `Audio` ist mit einer Tabelle pro Klasse umgesetzt: `Song` und `Podcast` verwenden den Schlüssel von `Audio` als Primär- und Fremdschlüssel. User wurde zu AppUser umbenannt, da User ein reserviertes Wort ist.
 
 ```
 Audio (
@@ -91,7 +91,7 @@ Album (
   Title VARCHAR(200) NOT NULL,
   ReleaseDate DATE NOT NULL
 )
-User (
+AppUser (
   ID INTEGER,
   Username VARCHAR(50) NOT NULL UNIQUE,
   ProfilePictureUrl VARCHAR(500)
@@ -99,7 +99,7 @@ User (
 Playlist (
   ID INTEGER,
   Title VARCHAR(100) NOT NULL,
-  User NOT NULL REFERENCES User
+  AppUser NOT NULL REFERENCES AppUser
 )
 AudioArtist (
   Audio REFERENCES Audio,
@@ -118,3 +118,16 @@ PlaylistSong (
   Song REFERENCES Song
 )
 ```
+
+## Testdaten
+
+Alle Tabellen enthalten mindestens 10 Tupel, auch die abgeleiteten Klassen `song` (20) und `podcast` (10). Es gibt daher keine Ausnahmen.
+
+Bei den many-to-many Assoziationen sind alle Fälle abgedeckt:
+
+- **Audio – Artist:** Audios mit einem und mit mehreren Artists (z. B. *Get Lucky*), Artists mit keinem, einem und vielen Audios.
+- **Album – Artist:** Alben mit einem und mit mehreren Artists (*Best of Swiss Rock*), Artists mit keinem, einem und vielen Alben.
+- **Album – Song:** Alben mit einem und mit vielen Songs, Songs auf keinem (Singles), einem und mehreren Alben (z. B. auf *Greatest Hits*).
+- **Playlist – Song:** Playlists mit keinem, einem und vielen Songs, Songs in keiner, einer und vielen Playlists.
+
+Zusätzlich gibt es einen User ohne Playlist, zwei User mit gleichem Playlist-Titel (erlaubt nach K3) und ein angekündigtes, noch nicht erschienenes Album.
