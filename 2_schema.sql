@@ -1,3 +1,5 @@
+-- Autoren: Rusch, Stadler, Manser
+
 CREATE TABLE audio (
     id          INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     title       VARCHAR(200) NOT NULL,

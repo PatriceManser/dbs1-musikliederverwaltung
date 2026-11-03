@@ -1,3 +1,5 @@
+-- Autoren: Rusch, Stadler, Manser
+
 ALTER TABLE audio
     ADD CONSTRAINT audio_duration_positive CHECK (duration > INTERVAL '0');
 

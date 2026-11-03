@@ -1,3 +1,5 @@
+-- Autoren: Rusch, Stadler, Manser
+
 DROP DATABASE IF EXISTS audioverwaltung;
 DROP ROLE IF EXISTS audioverwaltung_user;
 

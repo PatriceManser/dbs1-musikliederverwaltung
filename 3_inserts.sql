@@ -1,3 +1,5 @@
+-- Autoren: Rusch, Stadler, Manser
+
 INSERT INTO artist (name, country) VALUES
     ('Queen', 'GB'),
     ('David Bowie', 'GB'),
