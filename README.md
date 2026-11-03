@@ -12,7 +12,7 @@ Die Audioverwaltung verwaltet Audioinhalte wie Songs und Podcasts. Jedes Audio h
 4. Ein Album enthält nur Songs, die von mindestens einem Artist des Albums veröffentlicht wurden.
 5. Der Benutzername eines Users ist eindeutig.
 
-## Einsatz von KI
+## Einsatz von KI für Abgabe #1
 
 Beschreibung, Konsistenzbedingungen und Klassendiagramm wurde von den Autoren erstellt mit Unterstützung von Claude Code verbessert.
 
@@ -119,15 +119,6 @@ PlaylistSong (
 )
 ```
 
-## Testdaten
+## Einsatz von KI für Abgabe #2
 
-Alle Tabellen enthalten mindestens 10 Tupel, auch die abgeleiteten Klassen `song` (20) und `podcast` (10). Es gibt daher keine Ausnahmen.
-
-Bei den many-to-many Assoziationen sind alle Fälle abgedeckt:
-
-- **Audio – Artist:** Audios mit einem und mit mehreren Artists (z. B. *Get Lucky*), Artists mit keinem, einem und vielen Audios.
-- **Album – Artist:** Alben mit einem und mit mehreren Artists (*Best of Swiss Rock*), Artists mit keinem, einem und vielen Alben.
-- **Album – Song:** Alben mit einem und mit vielen Songs, Songs auf keinem (Singles), einem und mehreren Alben (z. B. auf *Greatest Hits*).
-- **Playlist – Song:** Playlists mit keinem, einem und vielen Songs, Songs in keiner, einer und vielen Playlists.
-
-Zusätzlich gibt es einen User ohne Playlist, zwei User mit gleichem Playlist-Titel (erlaubt nach K3) und ein angekündigtes, noch nicht erschienenes Album.
+Zur Überführung des Klassendiagramms in das DB-Modell sowie der Erstellung der SQL-Anweisungen wurde Claude verwendet. Die Outputs von Claude wurden durch uns kontrolliert, getestet und grosszügig angepasst. Als Start-Prompt wurde folgender verwendet: ` We need to add the logical model in the relational style. I've attached an example.` Dazu wurde Das Flugverwaltungsbeispiel angehängt. Die folgenden Aufgaben wurden darauf aufbauend umgesetzt: 2_schema.sql konnte ziemlich vollständig aus dem DB-Modell übernommen werden. Die Testdaten wurden unter Berücksichtigung der verschiedenen many-to-many Anwendungsfälle von Claude generiert. Ebenfalls wurden die Constraints getestet, diese Anweisungen geben wir jedoch nicht ab (da es beim Ausführen ja keine Errors geben darf).
