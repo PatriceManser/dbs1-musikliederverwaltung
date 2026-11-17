@@ -125,4 +125,4 @@ Zur Überführung des Klassendiagramms in das DB-Modell sowie der Erstellung der
 
 ## Einsatz von KI für Abgabe #3
 
-Die Queries und Views in `5_queries.sql` (Aufgaben 1a-f, 2a-d und 3a-d) wurden mit Unterstützung von Claude Code erstellt. Claude hat dazu das bestehende Schema und die Testdaten verwendet. Die Statements und Resultate wurden durch uns kontrolliert und mit `psql -U postgres -v ON_ERROR_STOP=on -f 0_runAllScripts.sql` getestet. Als Start-Prompt wurde folgender verwendet: `have a look at @Dbs1-Testat3.pdf. Kannst du die Aufgaben lösen?`
+Die Queries und Views in `5_queries.sql` wurden mit Unterstützung von Claude Code erstellt. Claude hat dazu das bestehende Schema und die Testdaten verwendet. Die Statements und Resultate wurden durch uns kontrolliert und mit `psql -U postgres -v ON_ERROR_STOP=on -f 0_runAllScripts.sql` getestet. Als Start-Prompt wurde folgender verwendet: `have a look at @Dbs1-Testat3.pdf. Can you guide us through the exercises?`
