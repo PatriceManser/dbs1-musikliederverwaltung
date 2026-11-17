@@ -11,3 +11,4 @@ CREATE DATABASE audioverwaltung OWNER audioverwaltung_user ENCODING 'UTF8';
 \ir 2_schema.sql
 \ir 3_inserts.sql
 \ir 4_constraints.sql
+\ir 5_queries.sql

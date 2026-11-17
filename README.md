@@ -122,3 +122,7 @@ PlaylistSong (
 ## Einsatz von KI für Abgabe #2
 
 Zur Überführung des Klassendiagramms in das DB-Modell sowie der Erstellung der SQL-Anweisungen wurde Claude verwendet. Die Outputs von Claude wurden durch uns kontrolliert, getestet und grosszügig angepasst. Als Start-Prompt wurde folgender verwendet: ` We need to add the logical model in the relational style. I've attached an example.` Dazu wurde Das Flugverwaltungsbeispiel angehängt. Die folgenden Aufgaben wurden darauf aufbauend umgesetzt: 2_schema.sql konnte ziemlich vollständig aus dem DB-Modell übernommen werden. Die Testdaten wurden unter Berücksichtigung der verschiedenen many-to-many Anwendungsfälle von Claude generiert.
+
+## Einsatz von KI für Abgabe #3
+
+Die Queries und Views in `5_queries.sql` (Aufgaben 1a-f, 2a-d und 3a-d) wurden mit Unterstützung von Claude Code erstellt. Claude hat dazu das bestehende Schema und die Testdaten verwendet. Die Statements und Resultate wurden durch uns kontrolliert und mit `psql -U postgres -v ON_ERROR_STOP=on -f 0_runAllScripts.sql` getestet. Als Start-Prompt wurde folgender verwendet: `have a look at @Dbs1-Testat3.pdf. Kannst du die Aufgaben lösen?`

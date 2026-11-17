@@ -1,0 +1,48 @@
+# Lokale Testumgebung: Postgres + pgAdmin. Start/Stop via ./db.sh
+services:
+  postgres:
+    image: postgres:17
+    environment:
+      # ponytail: trust = kein Passwort, nur lokal gebunden (127.0.0.1)
+      POSTGRES_HOST_AUTH_METHOD: trust
+    ports:
+      - "127.0.0.1:5432:5432"
+    volumes:
+      - .:/scripts:ro
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "postgres"]
+      interval: 1s
+      retries: 30
+
+  pgadmin:
+    image: dpage/pgadmin4:9
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@example.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+      PGADMIN_CONFIG_SERVER_MODE: "False"
+      PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED: "False"
+      PGADMIN_CONFIG_ENABLE_PSQL: "True"
+      PGADMIN_SERVER_JSON_FILE: /pgadmin4/servers.json
+    ports:
+      - "127.0.0.1:5050:80"
+    volumes:
+      - .:/scripts:ro
+    configs:
+      - source: servers
+        target: /pgadmin4/servers.json
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+configs:
+  servers:
+    content: |
+      {"Servers": {"1": {
+        "Name": "Audioverwaltung (Docker)",
+        "Group": "Servers",
+        "Host": "postgres",
+        "Port": 5432,
+        "MaintenanceDB": "postgres",
+        "Username": "postgres",
+        "SSLMode": "prefer"
+      }}}
