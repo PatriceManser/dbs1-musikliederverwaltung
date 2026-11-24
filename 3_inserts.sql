@@ -48,6 +48,8 @@ INSERT INTO audio (title, duration, audio_url) VALUES
     ('Fest & Flauschig - Folge 2', '01:12:00', 'https://audio.example.com/29.mp3'),
     ('Fest & Flauschig - Folge 3', '00:58:00', 'https://audio.example.com/30.mp3');
 
+-- genre ist seit Testat 4 vom Aufzähltyp genre_type: erlaubt sind nur dessen
+-- Werte oder NULL.
 INSERT INTO song (audio, genre) VALUES
     (1, 'Rock'),
     (2, 'Rock'),
@@ -129,6 +131,7 @@ INSERT INTO album_song (album, song) VALUES
     (14, 17), (14, 18),
     (15, 15), (15, 17);
 
+-- Keine expliziten IDs: SERIAL vergibt sie automatisch, beginnend mit 1.
 INSERT INTO app_user (username, profile_picture_url) VALUES
     ('lisa_s', 'https://img.example.com/lisa_s.png'),
     ('tom_m', 'https://img.example.com/tom_m.png'),
@@ -143,20 +146,27 @@ INSERT INTO app_user (username, profile_picture_url) VALUES
     ('mia_l', 'https://img.example.com/mia_l.png'),
     ('noah_g', NULL);
 
-INSERT INTO playlist (title, app_user) VALUES
-    ('Favoriten', 1),
-    ('Workout', 1),
-    ('Roadtrip', 2),
-    ('Favoriten', 2),
-    ('Chill', 3),
-    ('Swiss Rock', 4),
-    ('Party', 5),
-    ('Klassiker', 6),
-    ('Lernen', 7),
-    ('Neue Playlist', 8),
-    ('Sommer 2014', 9),
-    ('Duette', 10),
-    ('Morgenroutine', 11);
+-- Sequence auf die höchste vergebene ID setzen (nächste ID ist MAX + 1). Ohne
+-- explizite IDs ist sie bereits aktuell; das Statement stellt dies aber auch
+-- sicher, falls einzelne User mit expliziter ID eingefügt würden.
+SELECT setval('app_user_id_seq', (SELECT MAX(id) FROM app_user));
+
+-- Die Fremdschlüssel auf app_user setzen voraus, dass die IDs der User
+-- sequenziell ab 1 vergeben wurden.
+INSERT INTO playlist (title, app_user, is_public) VALUES
+    ('Favoriten', 1, FALSE),
+    ('Workout', 1, TRUE),
+    ('Roadtrip', 2, TRUE),
+    ('Favoriten', 2, FALSE),
+    ('Chill', 3, TRUE),
+    ('Swiss Rock', 4, TRUE),
+    ('Party', 5, TRUE),
+    ('Klassiker', 6, FALSE),
+    ('Lernen', 7, FALSE),
+    ('Neue Playlist', 8, FALSE),
+    ('Sommer 2014', 9, TRUE),
+    ('Duette', 10, FALSE),
+    ('Morgenroutine', 11, FALSE);
 
 INSERT INTO playlist_song (playlist, song) VALUES
     (1, 1), (1, 6), (1, 13), (1, 17),

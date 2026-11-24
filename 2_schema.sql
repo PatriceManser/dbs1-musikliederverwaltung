@@ -29,8 +29,11 @@ CREATE TABLE album (
     release_date DATE         NOT NULL
 );
 
+-- Testat 4, Aufgabe 2: id ist vom Typ SERIAL (Sequence app_user_id_seq).
+-- app_user.id wird nur von playlist referenziert (1:n) und ist damit nicht
+-- Teil einer many-to-many Assoziation.
 CREATE TABLE app_user (
-    id                  INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    id                  SERIAL PRIMARY KEY,
     username            VARCHAR(50) NOT NULL,
     profile_picture_url VARCHAR(500)
 );
@@ -64,3 +67,28 @@ CREATE TABLE playlist_song (
     song     INTEGER REFERENCES song,
     PRIMARY KEY (playlist, song)
 );
+
+-- =====================================================================
+-- Testat 4, Aufgabe 3: Schema-Evolution mit ALTER TABLE
+-- =====================================================================
+
+-- Aufzähltyp für das Genre eines Songs mit den bisher verwendeten Genres.
+CREATE TYPE genre_type AS ENUM ('Disco', 'Hard Rock', 'House', 'Mundart', 'Pop', 'Rock');
+
+-- song.genre von VARCHAR auf den Aufzähltyp umstellen. USING ist nötig, da
+-- Postgres einen VARCHAR nicht automatisch in einen ENUM umwandelt.
+ALTER TABLE song
+    ALTER COLUMN genre TYPE genre_type USING genre::genre_type;
+
+-- Neues Feld vom Typ BOOLEAN: Eine Playlist ist öffentlich (TRUE) oder
+-- privat (FALSE). Ohne Angabe ist eine neue Playlist privat.
+ALTER TABLE playlist
+    ADD COLUMN is_public BOOLEAN NOT NULL DEFAULT FALSE;
+
+-- =====================================================================
+-- Testat 4, Aufgabe 4: Funktionaler Index
+-- =====================================================================
+
+-- Index auf den Ausdruck lower(name) für die Suche nach Artists unabhängig
+-- von Gross-/Kleinschreibung (Anwendung siehe 5_queries.sql).
+CREATE INDEX artist_name_lower_idx ON artist (lower(name));

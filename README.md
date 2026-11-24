@@ -2,7 +2,7 @@
 
 ## Beschreibung
 
-Die Audioverwaltung verwaltet Audioinhalte wie Songs und Podcasts. Jedes Audio hat einen Titel, eine Dauer und eine Audio-URL und ist entweder ein Song oder ein Podcast. Ein Song hat zusätzlich ein Genre, ein Podcast eine Beschreibung. Audios werden von einem oder mehreren Artists veröffentlicht, ein Artist veröffentlicht beliebig viele Audios. Songs können auf Alben erscheinen, ein Album hat ein Veröffentlichungsdatum, wird von einem oder mehreren Artists veröffentlicht und enthält mindestens einen Song. Ein Song kann auf mehreren Alben vorkommen oder auf keinem (Single). User haben einen Benutzernamen und ein Profilbild und erstellen beliebig viele Playlists, die Songs enthalten. Ein Song kann in beliebig vielen Playlists enthalten sein.
+Die Audioverwaltung verwaltet Audioinhalte wie Songs und Podcasts. Jedes Audio hat einen Titel, eine Dauer und eine Audio-URL und ist entweder ein Song oder ein Podcast. Ein Song hat zusätzlich ein Genre (Disco, Hard Rock, House, Mundart, Pop oder Rock), ein Podcast eine Beschreibung. Audios werden von einem oder mehreren Artists veröffentlicht, ein Artist veröffentlicht beliebig viele Audios. Songs können auf Alben erscheinen, ein Album hat ein Veröffentlichungsdatum, wird von einem oder mehreren Artists veröffentlicht und enthält mindestens einen Song. Ein Song kann auf mehreren Alben vorkommen oder auf keinem (Single). User haben einen Benutzernamen und ein Profilbild und erstellen beliebig viele Playlists, die Songs enthalten und öffentlich oder privat sind. Ein Song kann in beliebig vielen Playlists enthalten sein.
 
 ## Konsistenzbedingungen
 
@@ -26,7 +26,16 @@ classDiagram
         +audioUrl : VARCHAR
     }
     class Song {
-        +genre : VARCHAR
+        +genre : Genre
+    }
+    class Genre {
+        <<enumeration>>
+        Disco
+        Hard Rock
+        House
+        Mundart
+        Pop
+        Rock
     }
     class Podcast {
         +description : VARCHAR
@@ -41,6 +50,7 @@ classDiagram
     }
     class Playlist {
         +title : VARCHAR
+        +isPublic : BOOLEAN
     }
     class User {
         +username : VARCHAR
@@ -64,9 +74,11 @@ classDiagram
 
 ## Logisches DB-Modell
 
-Primärschlüssel ist jeweils das erste Attribut, bei den Beziehungstabellen die Kombination der beiden Fremdschlüssel. Die Vererbung von `Audio` ist mit einer Tabelle pro Klasse umgesetzt: `Song` und `Podcast` verwenden den Schlüssel von `Audio` als Primär- und Fremdschlüssel. User wurde zu AppUser umbenannt, da User ein reserviertes Wort ist.
+Primärschlüssel ist jeweils das erste Attribut, bei den Beziehungstabellen die Kombination der beiden Fremdschlüssel. Die Vererbung von `Audio` ist mit einer Tabelle pro Klasse umgesetzt: `Song` und `Podcast` verwenden den Schlüssel von `Audio` als Primär- und Fremdschlüssel. User wurde zu AppUser umbenannt, da User ein reserviertes Wort ist. Die ID von `AppUser` wird über eine Sequence (`SERIAL`) vergeben, die übrigen IDs über Identity-Spalten. Das Genre eines Songs ist als Aufzähltyp `GenreType` umgesetzt, die Sichtbarkeit einer Playlist als `BOOLEAN`.
 
 ```
+GenreType ENUM ('Disco', 'Hard Rock', 'House', 'Mundart', 'Pop', 'Rock')
+
 Audio (
   ID INTEGER,
   Title VARCHAR(200) NOT NULL,
@@ -75,7 +87,7 @@ Audio (
 )
 Song (
   Audio REFERENCES Audio,
-  Genre VARCHAR(50)
+  Genre GenreType
 )
 Podcast (
   Audio REFERENCES Audio,
@@ -92,14 +104,15 @@ Album (
   ReleaseDate DATE NOT NULL
 )
 AppUser (
-  ID INTEGER,
+  ID SERIAL,
   Username VARCHAR(50) NOT NULL UNIQUE,
   ProfilePictureUrl VARCHAR(500)
 )
 Playlist (
   ID INTEGER,
   Title VARCHAR(100) NOT NULL,
-  AppUser NOT NULL REFERENCES AppUser
+  AppUser NOT NULL REFERENCES AppUser,
+  IsPublic BOOLEAN NOT NULL DEFAULT FALSE
 )
 AudioArtist (
   Audio REFERENCES Audio,
@@ -126,3 +139,7 @@ Zur Überführung des Klassendiagramms in das DB-Modell sowie der Erstellung der
 ## Einsatz von KI für Abgabe #3
 
 Die Queries und Views in `5_queries.sql` wurden mit Unterstützung von Claude Code erstellt. Claude hat dazu das bestehende Schema und die Testdaten verwendet. Die Statements und Resultate wurden durch uns kontrolliert und mit `psql -U postgres -v ON_ERROR_STOP=on -f 0_runAllScripts.sql` getestet. Als Start-Prompt wurde folgender verwendet: `have a look at @Dbs1-Testat3.pdf. Can you guide us through the exercises?`
+
+## Einsatz von KI für Abgabe #4
+
+Alle Aufgaben von Testat 4 wurden mit Unterstützung von Claude Code gelöst: der Lateral Join (`5_queries.sql`), die Umstellung von `app_user.id` auf `SERIAL`, der Aufzähltyp `genre_type`, das BOOLEAN-Feld `playlist.is_public` und der funktionale Index auf `lower(name)` (`2_schema.sql`, `3_inserts.sql`, `5_queries.sql`) sowie die auskommentierten Tests (`4_constraints.sql`). Claude hat dazu die Aufgabenstellung, das bestehende Schema und die Testdaten verwendet. Die Statements und Resultate wurden durch uns kontrolliert und mit `psql -U postgres -v ON_ERROR_STOP=on -f 0_runAllScripts.sql` getestet. Als Start-Prompt wurde folgender verwendet: `erstelle mir gemäss des Dbs1-Testat4.pdf die gewünschten arbeitsergebnisse im stil wie wir bisher gearbeitet haben`

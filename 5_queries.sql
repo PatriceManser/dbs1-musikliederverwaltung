@@ -88,17 +88,18 @@ WHERE t.gesamtdauer > INTERVAL '5 hours'
 ORDER BY t.gesamtdauer DESC;
 
 -- 2c) Anzahl Songs, Gesamt- und Durchschnittsdauer pro Genre.
-SELECT COALESCE(s.genre, 'unbekannt') AS genre,
-       COUNT(*)                       AS anzahl_songs,
-       SUM(a.duration)                AS gesamtdauer,
-       AVG(a.duration)                AS durchschnittsdauer
+-- genre ist seit Testat 4 ein ENUM und wird für 'unbekannt' nach text gecastet.
+SELECT COALESCE(s.genre::text, 'unbekannt') AS genre,
+       COUNT(*)                             AS anzahl_songs,
+       SUM(a.duration)                      AS gesamtdauer,
+       AVG(a.duration)                      AS durchschnittsdauer
 FROM song s
 JOIN audio a ON a.id = s.audio
 GROUP BY s.genre
 ORDER BY anzahl_songs DESC, genre;
 
 -- 2d) Rang jedes Songs nach Dauer innerhalb seines Genres (Window-Funktion).
-SELECT COALESCE(s.genre, 'unbekannt') AS genre,
+SELECT COALESCE(s.genre::text, 'unbekannt') AS genre,
        a.title,
        a.duration,
        RANK()   OVER (PARTITION BY s.genre ORDER BY a.duration DESC) AS rang_im_genre,
@@ -149,3 +150,46 @@ WHERE name = 'Patent Ochsner';
 
 -- Kontrolle: Änderung ist in der Basistabelle artist sichtbar.
 SELECT id, name, country FROM artist WHERE country = 'CH' ORDER BY id;
+
+-- =====================================================================
+-- Testat 4, Aufgabe 1: Lateral Join
+-- =====================================================================
+
+-- TopN-Query: Alle Artists mit ihren 2 neuesten Alben; Ausgabe Name, Album
+-- und Veröffentlichungsdatum. Dank LATERAL wird die Subquery pro Artist
+-- ausgewertet und kann ar.id aus der "linken" Tabelle als Argument verwenden.
+-- Artists ohne Album (z.B. die Podcaster) fallen beim JOIN LATERAL weg; mit
+-- LEFT JOIN LATERAL würden sie mit NULL-Werten erscheinen.
+SELECT ar.name, top2.title AS album, top2.release_date
+FROM artist ar
+JOIN LATERAL (
+    SELECT al.title, al.release_date
+    FROM album al
+    JOIN album_artist aa ON aa.album = al.id
+    WHERE aa.artist = ar.id
+    ORDER BY al.release_date DESC
+    LIMIT 2
+) AS top2 ON TRUE
+ORDER BY ar.name, top2.release_date DESC;
+
+-- =====================================================================
+-- Testat 4, Aufgabe 4: Funktionaler Index (Definition in 2_schema.sql)
+-- =====================================================================
+
+-- Suche nach einem Artist unabhängig von Gross-/Kleinschreibung. Die
+-- Bedingung verwendet denselben Ausdruck lower(name) wie der Index
+-- artist_name_lower_idx, deshalb kann dieser für die Suche verwendet werden.
+SELECT id, name, country
+FROM artist
+WHERE lower(name) = lower('DAFT PUNK');
+
+-- Kontrolle mit EXPLAIN, dass der Index verwendet wird. Bei nur 14 Artists
+-- wäre ein Seq Scan günstiger, deshalb wird dieser hier kurz deaktiviert.
+SET enable_seqscan = off;
+
+EXPLAIN
+SELECT id, name, country
+FROM artist
+WHERE lower(name) = lower('DAFT PUNK');
+
+RESET enable_seqscan;
